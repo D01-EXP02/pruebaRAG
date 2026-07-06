@@ -1,8 +1,7 @@
 from __future__ import annotations
-
 import re
 from pathlib import Path
-
+from src.ingestion.vector_charge import obtener_o_crear_vectorstore 
 from src.afiliados.repositorio import AfiliadosRepository
 from src.ingestion.pdf_chunker import fragmentar_documentos_pdf
 from src.retribucion_rag.rag import construir_respuesta_rag
@@ -14,10 +13,15 @@ def extraer_id_afiliado(consulta: str) -> str | None:
 
 
 def ejecutar_interfaz_cli() -> None:
-    print("/////////////////* Asistente de cobertura de planes de salud *////////////////")
+    print("\n\n /////////////////* Asistente de cobertura de planes de salud *////////////////\n")
     print("Escribe 'salir' para terminar.\n")
 
     repo = AfiliadosRepository(Path("data/afiliados/BD_afiliados.xlsx"))
+
+    print("[INFO] Preparando documentos y base vectorial...")
+    documentos = fragmentar_documentos_pdf(Path("data/docs"), chunk_size=400, chunk_overlap=150)
+    vectorstore = obtener_o_crear_vectorstore(documentos, persist_directory="data/vectorstore") 
+    print("[INFO] Listo.\n")
 
     while True:
         consulta = input("Tu consulta: ").strip()
@@ -42,6 +46,8 @@ def ejecutar_interfaz_cli() -> None:
             consulta=consulta,
             afiliado_id=afiliado_id,
             documentos=documentos,
+            vectorstore=vectorstore,   
+
         )
 
         print(f"\nAfiliado encontrado: {afiliado.primer_nombre} {afiliado.primer_apellido}")

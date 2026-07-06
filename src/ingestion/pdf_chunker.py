@@ -9,8 +9,8 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 def fragmentar_documentos_pdf(
     carpeta_docs: str | Path,
-    chunk_size: int = 800,
-    chunk_overlap: int = 120,
+    chunk_size: int = 400,
+    chunk_overlap: int = 150,
 ) -> List[Document]:
     carpeta = Path(carpeta_docs)
     if not carpeta.exists():
