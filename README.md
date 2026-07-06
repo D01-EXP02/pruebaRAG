@@ -30,7 +30,7 @@ src/
 data/
   afiliados/        # archivo Excel con afiliados
   docs/             # documentos PDF de referencia
-  chroma_db/        # base de datos vectorial Chroma
+  vectorstore/       # base de datos vectorial Chroma
 ```
 
 ## Requisitos
@@ -38,6 +38,14 @@ data/
 - Python 3.10 o superior
 - Entorno virtual recomendado
 - Dependencias listadas en `requirements.txt`
+
+## Instalación de Ollama (LLM local)
+No se requieren APIKEYS EXTERNAS, POR LO QUE RECURRIMOS AL MODELO DE OLLAMA.
+
+1. Descargar e instalar Ollama desde https://ollama.com/download
+2. Descargar el modelo utilizado por el proyecto usando:   ollama pull llama3.2:3b                    
+3. En Windows, Ollama corre automáticamente como servicio en segundo plano
+tras la instalación (no requiere ejecutar `ollama serve` manualmente).
 
 ## Entorno de desarrollo
 
@@ -75,17 +83,23 @@ La aplicación te pedirá:
 - el ID del afiliado (o lo detectará si aparece en la consulta)
 - la consulta formal que deseas evaluar
 
-### Opción 2: probar el pipeline directamente
+## Nota sobre la primera ejecución
 
-```bash
-python -c "from pathlib import Path; from src.ingestion.pdf_chunker import fragmentar_documentos_pdf; from src.retribucion_rag.rag import construir_respuesta_rag; docs = fragmentar_documentos_pdf(Path('data/docs'), chunk_size=600, chunk_overlap=80); print(construir_respuesta_rag('consulta de ejemplo', 'A-00015', docs))"
-```
+En la primera consulta, el sistema generará automáticamente los embeddings 
+y la base vectorial en `data/vectorstore/` (puede tardar unos segundos 
+adicionales). En ejecuciones posteriores, el vectorstore se reutiliza 
+directamente desde disco sin recalcular nada.
 
 ## Probar los tests
 
 ```bash
 pytest -q
 ```
+Si aparece un error de `ModuleNotFoundError: No module named 'src'`, verifica que
+exista el archivo `pytest.ini` en la raíz del proyecto con el contenido:
+
+[pytest]
+pythonpath = .
 
 ## Notas
 
