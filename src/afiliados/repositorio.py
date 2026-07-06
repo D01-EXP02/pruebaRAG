@@ -15,12 +15,10 @@ COLUMNAS_OPCIONALES = [
 
 
 class AfiliadoNoEncontradoError(Exception):
-    """Se lanza cuando no existe un afiliado con el id solicitado."""
+    """Se lanza cuando no existe n afiliado con el id solicitado."""
 
 
 class AfiliadosRepository:
-    """Repositorio en memoria sobre BD_afiliados.xlsx (hoja 'Afiliados')."""
-
     def __init__(self, ruta_excel: str | Path):
         self._ruta = Path(ruta_excel)
         if not self._ruta.exists():
